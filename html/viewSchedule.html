@@ -3,12 +3,31 @@
 <head>
 <title> This is the organizer view </title>
 </head>
-<body>
-<h1> Welcome Organizers </h1>
-<p> Use this page to create a new schedule.</p>
+<body onload="drawTable()">
+<h1> Welcome Everyone </h1>
+<p> Use this page to view a schedule, edit a meeting, and edit the schedule.</p>
 
-<form name="createCalendar" onSubmit="checkDate">
-    <fieldset>
+<form name="createCalendar" >
+    <table id="scheduleTable">
+        <tr id="row_0">
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+        </tr>
+
+        <tr id="row_1">
+            <th> </th>
+            <th> Monday </th>
+            <th> Tuesday </th>
+            <th> Wednesday </th>
+            <th> Thursday </th>
+            <th> Friday </th>
+        </tr>
+    </table>
+    <!--<fieldset>
         <legend> Schedule starting information </legend>
         <p> Schedule starting date: </p>
         <input type="date" name="startingDate" required="required"/>
@@ -88,9 +107,10 @@
     <br />
 
     <input type="submit" value="Submit" />
+    -->
     </form>
 </body>
-  
+
 <script type="text/javascript">
 
     function checkDate(){
@@ -101,5 +121,9 @@
         return null;
     }
 </script>
+
+<script src="../Javascript/drawTable.js" type="application/javascript"></script>
+
+<script src="../Javascript/jquery-3.3.1.js" type="application/javascript"></script>
 
 </html>

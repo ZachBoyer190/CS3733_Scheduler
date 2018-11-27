@@ -1,8 +1,5 @@
 function validateDaysOfWeek(){
 
-
-    //const startDateValue = Date.parse(document.createCalendar.startingDate.value);
-    //const endingDateValue = Date.parse(document.createCalendar.endingDate.value);
     const startDateValue = new Date(document.createCalendar.startingDate.value);
     const endingDateValue = new Date(document.createCalendar.endingDate.value);
 
@@ -30,8 +27,6 @@ function validateDaysOfWeek(){
             console.log("incorrect day of the week")
             return false;
     }
-    console.log(startDateValue);
-    console.log(endingDateValue);
 
     const startDateValueString = document.createCalendar.startingDate.value;
     const endingDateValueString = document.createCalendar.endingDate.value;
@@ -53,15 +48,19 @@ function validateDaysOfWeek(){
             {"endTIme": endingTimeString},
             {"timeDelta": timeStep}
         ]
-    };
+    }
+    ;
 
-
-
-    const xhr = new XMLHttpRequest();
     const url = 'https://jsonplaceholder.typicode.com/posts';
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader('Content-Type','application/json');
-    xhr.send(JSON.stringify(sentObject));
+    $.post(url,JSON.stringify(sentObject),function(data,status){
+        const newScheduleID = data;
+
+        let redirectURL = "viewSchedule.html";
+
+        redirectURL = redirectURL + "?scheduleID=" + "12345";//+ newScheduleID;
+
+        window.location.href = redirectURL;
+    });
+
     document.getElementById("errorString").innerHTML = "Request Sent";
-    return false;
 }
