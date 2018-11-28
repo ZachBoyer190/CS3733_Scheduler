@@ -1,126 +1,90 @@
+<html lang="" xmlns="http://www.w3.org/1999/html">
 
-<html>
 <head>
 <title> This is the organizer view </title>
 </head>
+
+
 <body onload="drawTable()">
 <h1> Welcome Everyone </h1>
 <p> Use this page to view a schedule, edit a meeting, and edit the schedule.</p>
 
+<hr>
+
 <form name="createCalendar" >
-    <table id="scheduleTable">
-        <tr id="row_0">
-            <th> </th>
-            <th> </th>
-            <th> </th>
-            <th> </th>
-            <th> </th>
-            <th> </th>
-        </tr>
 
-        <tr id="row_1">
-            <th> </th>
-            <th> Monday </th>
-            <th> Tuesday </th>
-            <th> Wednesday </th>
-            <th> Thursday </th>
-            <th> Friday </th>
-        </tr>
-    </table>
-    <!--<fieldset>
-        <legend> Schedule starting information </legend>
-        <p> Schedule starting date: </p>
-        <input type="date" name="startingDate" required="required"/>
+    <p> Enter the schedule ID to see your schedule if it is not shown when the page is loaded </p>
+    <p> Schedule ID:
+        <input type="text" name="ScheduleID"/>
+        <input type="button" name="submitScheduleID" value="Submit"/>
+        <!-- TODO create button function and make sure it checks to see if an option has been inputted -->
+        <!--TODO create function to hand this text box
+         TODO create logic to handle if the page is loaded without a schedule id in the url-->
+    </p>
 
-        <p> Select starting schedule time </p>
-            <select name="startingTime" required="required">
-            <option value="00:00"> 00:00 </option>
-            <option value="01:00"> 01:00 </option>
-            <option value="02:00"> 02:00 </option>
-            <option value="03:00"> 03:00 </option>
-            <option value="04:00"> 04:00 </option>
-            <option value="05:00"> 05:00 </option>
-            <option value="06:00"> 06:00 </option>
-            <option value="07:00"> 07:00 </option>
-            <option value="08:00"> 08:00 </option>
-            <option value="09:00"> 09:00 </option>
-            <option value="10:00"> 10:00 </option>
-            <option value="11:00"> 11:00 </option>
-            <option value="12:00"> 12:00 </option>
-            <option value="13:00"> 13:00 </option>
-            <option value="14:00"> 14:00 </option>
-            <option value="15:00"> 15:00 </option>
-            <option value="16:00"> 16:00 </option>
-            <option value="17:00"> 17:00 </option>
-            <option value="18:00"> 18:00 </option>
-            <option value="19:00"> 19:00 </option>
-            <option value="20:00"> 20:00 </option>
-            <option value="21:00"> 21:00 </option>
-            <option value="22:00"> 22:00 </option>
-            <option value="23:00"> 23:00 </option>
-        </select>
-    </fieldset>
+    <hr>
 
     <fieldset>
-        <legend> Schedule ending information </legend>
-        <p> Schedule ending date: </p>
-        <input type="date" name="endingDate" required="required"/>
+        <div>
+            <p id="weekTag"> </p>
 
-        <p> Select ending schedule time </p>
-        <select name="endingTime" required="required">
-            <option value="00:00"> 00:00 </option>
-            <option value="01:00"> 01:00 </option>
-            <option value="02:00"> 02:00 </option>
-            <option value="03:00"> 03:00 </option>
-            <option value="04:00"> 04:00 </option>
-            <option value="05:00"> 05:00 </option>
-            <option value="06:00"> 06:00 </option>
-            <option value="07:00"> 07:00 </option>
-            <option value="08:00"> 08:00 </option>
-            <option value="09:00"> 09:00 </option>
-            <option value="10:00"> 10:00 </option>
-            <option value="11:00"> 11:00 </option>
-            <option value="12:00"> 12:00 </option>
-            <option value="13:00"> 13:00 </option>
-            <option value="14:00"> 14:00 </option>
-            <option value="15:00"> 15:00 </option>
-            <option value="16:00"> 16:00 </option>
-            <option value="17:00"> 17:00 </option>
-            <option value="18:00"> 18:00 </option>
-            <option value="19:00"> 19:00 </option>
-            <option value="20:00"> 20:00 </option>
-            <option value="21:00"> 21:00 </option>
-            <option value="22:00"> 22:00 </option>
-            <option value="23:00"> 23:00 </option>
-        </select>
+            <input type="button" name="leftArrow" value="<"/>
+            <!-- TODO add function to view schedule left of the current week -->
+            <input type="button" name="rightArrow" value=">" />
+            <!-- TODO add function to view schedule right of the current week -->
+        </div>
+        <table id="scheduleTable">
+            <tr>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+            </tr>
+
+            <tr>
+                <th> </th>
+                <th> Monday </th>
+                <th> Tuesday </th>
+                <th> Wednesday </th>
+                <th> Thursday </th>
+                <th> Friday </th>
+            </tr>
+        </table>
     </fieldset>
 
-    <p> Select length of each meeting in minutes</p>
-    <select name="meetingLength" required="required">
-        <option value="10"> 10 </option>
-        <option value="15"> 15 </option>
-        <option value="30"> 30 </option>
-        <option value="60"> 60 </option>
-    </select>
-
-    <br />
     <br />
 
-    <input type="submit" value="Submit" />
-    -->
+    <div>
+        <label> Secret Code to Edit Schedule:
+            <input type="text" name="secretCodeScheduleEdit" />
+            <input type="button" name="submitScheduleEditCode" value="Submit"/>
+            <!-- TODO create button function to check if the secret code is correct and make the other stuff visible -->
+
+        </label>
+        <!--TODO create function to hand this text box
+         TODO create submit button for this text box
+         TODO create logic to make edit dropdown and submit button appear-->
+
+        <div id="ScheduleEditOptions" style="visibility: visible;">
+            <label> Select change you would like to make to the schedule
+                <select name="selectedEdit">
+                    <!-- TODO fill in options -->
+                </select>
+
+                <input type="button" name="submitScheduleEdit" value="Submit"/>
+                <!-- TODO create button function and make sure it checks to see if an option has been selected -->
+            </label>
+        </div>
+    </div>
+
     </form>
+
+<p id="currentWeek" style="visibility: hidden"> 1 </p>
+<p id="totalWeeks" style="visibility: hidden"> 1 </p>
 </body>
 
-<script type="text/javascript">
-
-    function checkDate(){
-        const Http = new XMLHttpRequest();
-        const url = 'https://jsonplaceholder.typicode.com/posts';
-        Http.open("GET", url);
-        Http.send();
-        return null;
-    }
-</script>
 
 <script src="../Javascript/drawTable.js" type="application/javascript"></script>
 
