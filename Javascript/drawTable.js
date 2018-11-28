@@ -1,3 +1,4 @@
+// TODO change table filling order to create full table empty and then fill in each row and column
 // TODO adjust table filling function to insert based on date and time rather than index
 
 function drawTable(){
@@ -80,15 +81,32 @@ function generateDateString(startDate, index){
     const dayString = currentDate.getDate().toString();
     const monthString = (currentDate.getMonth()+1).toString();
     const yearString = currentDate.getFullYear().toString();
-    return monthString + "/" + dayString + "/" + yearString;
+    return yearString + "-" + monthString + "-" + dayString ;
 }
 
 function fillTimeSlots(htmlTable, schedule){
-    const numRows = ((schedule.endTime-schedule.startTime)*6/10)/schedule.deltaTime;
     const rowOffset = 2;
     const colOffset = 1;
+
+    const currentDates = new Array(5);
+    const row = htmlTable.rows[0];
+    for (var m = 0; m < currentDates.length; m++){
+        currentDates[m] = new Date(row.cells[m+1].innerHTML);
+    }
+
+    const currentTimes = new Array();
+    for (var n = 0; n < htmlTable.rows.length - rowOffset; n++){
+        const thisRow = htmlTable.rows[n+rowOffset];
+        currentTimes[n] = subtractColon(thisRow.cells[0].innerHTML);
+    }
+
+
+    const numRows = ((schedule.endTime-schedule.startTime)*6/10)/schedule.deltaTime;
+
     var k;
     for(k = 0; k < schedule.timeSlots.length; k++){
+
+
         const rowWithoutOffset = (k % numRows);
         const row = rowWithoutOffset + rowOffset;
         const col = ((k - rowWithoutOffset) / numRows) + colOffset;
@@ -127,6 +145,13 @@ function fillTimeSlots(htmlTable, schedule){
         }
 
     }
+}
+
+function subtractColon(string) {
+    const firstString = string.slice(0,2);
+    const lastString = string.slice(3,5);
+    return firstString + lastString;
+
 }
 
 function getTimeSlotStatus(timeSlot){
