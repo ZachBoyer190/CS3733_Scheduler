@@ -1,25 +1,30 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Schedule {
-	public final ArrayList<TimeSlot> timeslots;
-	public final User organizer;
-	public final Time startTime;
-	public final Time endTime;
-	public final int slotDelta;
-	public final String secretCode;
+	//public final ArrayList<TimeSlot> timeslots;
+	//public final User organizer;
+	
 	public final String scheduleID;
 	public final String name;
+	public final int startTime;
+	public final int endTime;
+	public final int slotDelta;
+	public final Date startDate;
+	public final Date endDate;
+	public final String secretCode;
 	
-	public Schedule (ArrayList<TimeSlot> ts, User o, Time st, Time et, int sd, String sc, String id, String name) {
-		this.timeslots = ts;
-		this.organizer = o;
-		this.startTime = st;
-		this.endTime = et;
-		this.slotDelta = sd;
-		this.secretCode = sc;
+	public Schedule (String id, String name, int startTime, int endTime, int delta, Date startDate, Date endDate, String code) {
 		this.scheduleID = id;
 		this.name = name;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.slotDelta = delta;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.secretCode = code;
+	
 	}
 }
