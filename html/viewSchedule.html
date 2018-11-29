@@ -1,105 +1,85 @@
+<html lang="" xmlns="http://www.w3.org/1999/html">
 
-<html>
 <head>
 <title> This is the organizer view </title>
 </head>
-<body>
-<h1> Welcome Organizers </h1>
-<p> Use this page to create a new schedule.</p>
 
-<form name="createCalendar" onSubmit="checkDate">
-    <fieldset>
-        <legend> Schedule starting information </legend>
-        <p> Schedule starting date: </p>
-        <input type="date" name="startingDate" required="required"/>
 
-        <p> Select starting schedule time </p>
-            <select name="startingTime" required="required">
-            <option value="00:00"> 00:00 </option>
-            <option value="01:00"> 01:00 </option>
-            <option value="02:00"> 02:00 </option>
-            <option value="03:00"> 03:00 </option>
-            <option value="04:00"> 04:00 </option>
-            <option value="05:00"> 05:00 </option>
-            <option value="06:00"> 06:00 </option>
-            <option value="07:00"> 07:00 </option>
-            <option value="08:00"> 08:00 </option>
-            <option value="09:00"> 09:00 </option>
-            <option value="10:00"> 10:00 </option>
-            <option value="11:00"> 11:00 </option>
-            <option value="12:00"> 12:00 </option>
-            <option value="13:00"> 13:00 </option>
-            <option value="14:00"> 14:00 </option>
-            <option value="15:00"> 15:00 </option>
-            <option value="16:00"> 16:00 </option>
-            <option value="17:00"> 17:00 </option>
-            <option value="18:00"> 18:00 </option>
-            <option value="19:00"> 19:00 </option>
-            <option value="20:00"> 20:00 </option>
-            <option value="21:00"> 21:00 </option>
-            <option value="22:00"> 22:00 </option>
-            <option value="23:00"> 23:00 </option>
-        </select>
-    </fieldset>
+<body onload="drawTableFromUrl()">
+<h1> Welcome Everyone </h1>
+<p> Use this page to view a schedule, edit a meeting, and edit the schedule.</p>
+
+<hr>
+
+
+    <p> Enter the schedule ID to see your schedule if it is not shown when the page is loaded </p>
+    <p> Schedule ID:
+        <input type="text" id="ScheduleID"/>
+        <input type="button" name="submitScheduleID" value="Submit" onclick="drawTableFromButton()"/>
+    </p>
+
+    <hr>
+
+    <h2 id="scheduleName"> </h2>
 
     <fieldset>
-        <legend> Schedule ending information </legend>
-        <p> Schedule ending date: </p>
-        <input type="date" name="endingDate" required="required"/>
+        <div>
+            <p id="weekTag"> </p>
 
-        <p> Select ending schedule time </p>
-        <select name="endingTime" required="required">
-            <option value="00:00"> 00:00 </option>
-            <option value="01:00"> 01:00 </option>
-            <option value="02:00"> 02:00 </option>
-            <option value="03:00"> 03:00 </option>
-            <option value="04:00"> 04:00 </option>
-            <option value="05:00"> 05:00 </option>
-            <option value="06:00"> 06:00 </option>
-            <option value="07:00"> 07:00 </option>
-            <option value="08:00"> 08:00 </option>
-            <option value="09:00"> 09:00 </option>
-            <option value="10:00"> 10:00 </option>
-            <option value="11:00"> 11:00 </option>
-            <option value="12:00"> 12:00 </option>
-            <option value="13:00"> 13:00 </option>
-            <option value="14:00"> 14:00 </option>
-            <option value="15:00"> 15:00 </option>
-            <option value="16:00"> 16:00 </option>
-            <option value="17:00"> 17:00 </option>
-            <option value="18:00"> 18:00 </option>
-            <option value="19:00"> 19:00 </option>
-            <option value="20:00"> 20:00 </option>
-            <option value="21:00"> 21:00 </option>
-            <option value="22:00"> 22:00 </option>
-            <option value="23:00"> 23:00 </option>
-        </select>
+            <input type="button" name="leftArrow" value="<" onclick="showDifferentWeek(-1)"/>
+            <input type="button" name="rightArrow" value=">" onclick="showDifferentWeek(1)"/>
+        </div>
+        <table id="scheduleTable">
+            <tr>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+            </tr>
+
+            <tr>
+                <th> </th>
+                <th> Monday </th>
+                <th> Tuesday </th>
+                <th> Wednesday </th>
+                <th> Thursday </th>
+                <th> Friday </th>
+            </tr>
+        </table>
+        <p id="meetingCode"></p>
     </fieldset>
 
-    <p> Select length of each meeting in minutes</p>
-    <select name="meetingLength" required="required">
-        <option value="10"> 10 </option>
-        <option value="15"> 15 </option>
-        <option value="30"> 30 </option>
-        <option value="60"> 60 </option>
-    </select>
-
-    <br />
     <br />
 
-    <input type="submit" value="Submit" />
-    </form>
+    <div>
+        <label> Secret Code to Edit Schedule:
+            <input type="password" id="secretCodeScheduleEdit" />
+            <input type="button" name="submitScheduleEditCode" value="Submit" onclick="checkEditAbility()"/>
+
+        </label>
+
+        <div id="scheduleEditOptions" style="visibility: hidden;">
+            <label> Select change you would like to make to the schedule
+                <select name="selectedEdit">
+                    <!-- TODO fill in options -->
+                </select>
+
+                <input type="button" name="submitScheduleEdit" value="Submit"/>
+                <!-- TODO create button function and make sure it checks to see if an option has been selected -->
+            </label>
+        </div>
+    </div>
+
+
+<p id="currentWeek" style="visibility: hidden"> 1 </p>
+<p id="totalWeeks" style="visibility: hidden"> 1 </p>
 </body>
-  
-<script type="text/javascript">
 
-    function checkDate(){
-        const Http = new XMLHttpRequest();
-        const url = 'https://jsonplaceholder.typicode.com/posts';
-        Http.open("GET", url);
-        Http.send();
-        return null;
-    }
-</script>
+
+<script src="../Javascript/drawTable.js" type="application/javascript"></script>
+
+<script src="../Javascript/jquery-3.3.1.js" type="application/javascript"></script>
 
 </html>
