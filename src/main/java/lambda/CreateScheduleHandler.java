@@ -35,7 +35,6 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		int id;
 		
 		
-		
 		return dao.addSchedule();
 	}
 	

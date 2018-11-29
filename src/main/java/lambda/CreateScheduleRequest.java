@@ -3,7 +3,6 @@ package main.java.lambda;
 import java.sql.Date;
 
 public class CreateScheduleRequest {
-
 	String name;
 	int startTime;
 	int endTime;

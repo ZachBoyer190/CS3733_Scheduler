@@ -21,7 +21,7 @@ public class Schedule {
 		startDate = sd;
 		endDate = ed;
 		
-		//generate secret code
+		//generate unique secret code
 		secretCode = "";
 	}
 }

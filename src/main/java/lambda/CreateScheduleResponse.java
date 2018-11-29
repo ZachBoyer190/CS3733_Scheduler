@@ -9,7 +9,7 @@ public class CreateScheduleResponse {
 		this.httpCode = code;
 	}
 	
-	// 200 means success
+	//200 means success
 	public CreateScheduleResponse (String s) {
 		this.response = s;
 		this.httpCode = 200;
