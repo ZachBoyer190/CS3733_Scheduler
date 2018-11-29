@@ -27,10 +27,8 @@
         <div>
             <p id="weekTag"> </p>
 
-            <input type="button" name="leftArrow" value="<"/>
-            <!-- TODO add function to view schedule left of the current week -->
-            <input type="button" name="rightArrow" value=">" />
-            <!-- TODO add function to view schedule right of the current week -->
+            <input type="button" name="leftArrow" value="<" onclick="showDifferentWeek(-1)"/>
+            <input type="button" name="rightArrow" value=">" onclick="showDifferentWeek(1)"/>
         </div>
         <table id="scheduleTable">
             <tr>

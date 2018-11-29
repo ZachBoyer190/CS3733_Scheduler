@@ -5,6 +5,14 @@ const colOffset = 1;
 const timeColIndex = 0;
 const dateRowIndex = 0;
 const dayRowIndex = 0;
+const numDaysInWeek = 7;
+const numMillisDay = 86400000;
+const startWeek = 1;
+let scheduleStartDate;
+let tableStartDate;
+
+// TODO comment this out once a response can be received from the server
+const storedScheduleObject = createScheduleObject();
 
 function drawTable(){
     let param = getParameter();
@@ -12,7 +20,9 @@ function drawTable(){
 
     let url = 'https://jsonplaceholder.typicode.com/posts';
     $.get(url,function (data, status) {
-        createTableFromObject(data);
+        // TODO uncomment this once schedules can be taken from server
+        //const storedScheduleObject = data;
+        createTableFromObject();
     });
 
 }
@@ -23,24 +33,28 @@ function getParameter(){
     return paramString.split("=")[1];
 }
 
-function createTableFromObject(scheduleObject){
-    scheduleObject = createScheduleObject();
+function createTableFromObject(){
 
     let table = document.getElementById("scheduleTable");
 
-    initWeekShown(scheduleObject);
-    fillDateRow(table, scheduleObject);
-    fillTableWithEmptyCells(table, scheduleObject);
-    fillTimeColumn(table, scheduleObject);
-    fillTimeSlots(table, scheduleObject);
+
+    scheduleStartDate = storedScheduleObject.startDate;
+    generateInitialTableStartDate();
+    initWeekShown();
+
+    fillDateRow(table);
+    fillTableWithEmptyCells(table);
+    fillTimeColumn(table);
+    fillTimeSlots(table);
     // TODO create a text area for putting the booking name
     // TODO create function that actually schedules a meeting
     // TODO add function logic to each button when it is made
 
 }
 
-function fillTableWithEmptyCells(table, schedule){
-    let numRows = ((schedule.endTime-schedule.startTime)*6/10)/schedule.deltaTime;
+function fillTableWithEmptyCells(table){
+    let numRows = ((storedScheduleObject.endTime-
+        storedScheduleObject.startTime)*6/10)/storedScheduleObject.deltaTime;
 
     for(let j = rowOffset; j < numRows+rowOffset; j++){
         let row = table.insertRow();
@@ -51,10 +65,11 @@ function fillTableWithEmptyCells(table, schedule){
     }
 }
 
-function fillDateRow(htmlTable, Schedule){
+function fillDateRow(htmlTable){
     let j;
     for (j = 0; j < 5; j++){
-        htmlTable.rows[dateRowIndex].cells[j+1].innerHTML = generateDateString(Schedule.startDate,j);
+        htmlTable.rows[dateRowIndex].cells[j+colOffset].innerHTML =
+            generateDateString(tableStartDate,j);
     }
 }
 
@@ -67,18 +82,19 @@ function generateDateString(startDate, index){
     return yearString + "-" + monthString + "-" + dayString ;
 }
 
-function fillTimeColumn(htmlTable, schedule){
-    let numRows = ((schedule.endTime-schedule.startTime)*6/10)/schedule.deltaTime;
+function fillTimeColumn(htmlTable){
+    let numRows = ((storedScheduleObject.endTime-storedScheduleObject.startTime)*6/10)
+        /storedScheduleObject.deltaTime;
     let hour = 60; // minutes
     let i;
-    let currentTime = schedule.startTime;
+    let currentTime = storedScheduleObject.startTime;
     for (i = rowOffset; i < numRows+rowOffset; i++) {
         let nonOffsetIndex = i -rowOffset;
         if (nonOffsetIndex !== 0) {
-            if (nonOffsetIndex % (hour/schedule.deltaTime) === 0) {
-                currentTime += 40 + schedule.deltaTime ;
+            if (nonOffsetIndex % (hour/storedScheduleObject.deltaTime) === 0) {
+                currentTime += 40 + storedScheduleObject.deltaTime ;
             } else {
-                currentTime += schedule.deltaTime;
+                currentTime += storedScheduleObject.deltaTime;
             }
         }
         htmlTable.rows[i].cells[timeColIndex].innerHTML = insertCharacter(currentTime.toString(),2,":");
@@ -91,14 +107,14 @@ function insertCharacter(string, index, character){
     return stringA + character + stringB;
 }
 
-function fillTimeSlots(htmlTable, schedule){
+function fillTimeSlots(htmlTable){
 
     let currentDates = getCurrentDates(htmlTable);
     let currentTimes = getCurrentTimes(htmlTable);
 
-    for(let k = 0; k < schedule.timeSlots.length; k++){
+    for(let k = 0; k < storedScheduleObject.timeSlots.length; k++){
 
-        let thisTimeSlot = schedule.timeSlots[k];
+        let thisTimeSlot = storedScheduleObject.timeSlots[k];
 
         let timeSlotDate = new Date(thisTimeSlot.date);
         let timeSlotTime = thisTimeSlot.time;
@@ -203,26 +219,56 @@ function createBookedCell(thisTimeSlot) {
     return div0;
 }
 
-function initWeekShown(schedule) {
-    editCurrentWeekShown(1);
-    console.log(schedule.startDate.getTime());
-    let millisStart = schedule.startDate.getTime();
-    let millisEnd = schedule.endDate.getTime();
-    let totalDays = (( millisEnd -millisStart)/(86400000));
-    let totalWeeks = Math.ceil(totalDays/5);
+function initWeekShown() {
+    editCurrentWeekShown(startWeek);
+    let millisStart = tableStartDate.getTime();
+    let millisEnd = storedScheduleObject.endDate.getTime();
+    let totalDays = (( millisEnd - millisStart)/(numMillisDay));
+    let totalWeeks = Math.ceil(totalDays/numDaysInWeek);
     editTotalWeeksShown(totalWeeks);
     updateWeekLabel()
+}
+
+function generateInitialTableStartDate() {
+    let dayOfWeek = scheduleStartDate.getDay();
+    if (dayOfWeek === 0) {
+        let scheduleStartMillis = scheduleStartDate.getTime();
+
+        let newTableStartDate = scheduleStartMillis + ((getCurrentWeekShown() - 1) * numDaysInWeek * numMillisDay);
+
+        tableStartDate = new Date(newTableStartDate);
+    } else {
+        let scheduleStartMillis = scheduleStartDate.getTime();
+        let newTableStartDate = (scheduleStartMillis - (dayOfWeek*numMillisDay)) + ((getCurrentWeekShown() - 1) * numDaysInWeek * numMillisDay);
+
+        tableStartDate = new Date(newTableStartDate);
+    }
+}
+
+function generateNewTableStartDate(days){
+
+    let newTableStartDate = tableStartDate.getTime() + (days*numMillisDay);
+
+    tableStartDate= new Date(newTableStartDate);
 }
 
 function editCurrentWeekShown(newWeek){
     document.getElementById("currentWeek").innerHTML = newWeek.toString();
 }
 
+function getCurrentWeekShown(){
+    let stringWeek = document.getElementById("currentWeek").innerHTML;
+    return parseInt(stringWeek);
+}
+
 function editTotalWeeksShown(totalWeek){
     let paragraph = document.getElementById("totalWeeks");
-    console.log(totalWeek.toString())
     paragraph.innerHTML = totalWeek;
+}
 
+function getTotalWeeksShown(){
+    let stringWeek = document.getElementById("totalWeeks").innerHTML;
+    return parseInt(stringWeek);
 }
 
 function updateWeekLabel(){
@@ -232,103 +278,151 @@ function updateWeekLabel(){
         " of " + totalWeeks +" Shown Below");
 }
 
+function showDifferentWeek(step){
+
+    let newWeek = getCurrentWeekShown()+step;
+    if (newWeek > getTotalWeeksShown() || newWeek <= 0 ) {
+        return;
+    }
+    editCurrentWeekShown(newWeek);
+    updateWeekLabel();
+    generateNewTableStartDate(step*numDaysInWeek);
+
+    let table = document.getElementById("scheduleTable");
+    fillDateRow(table);
+    emptyTimeSlots(table);
+    fillTimeSlots(table);
+}
+
+function emptyTimeSlots(table) {
+    for(let row = rowOffset; row < table.rows.length; row++){
+        for (let col = colOffset; col < table.rows[row].cells.length; col++) {
+            clearChildren(table.rows[row].cells[col]);
+        }
+    }
+}
+
+function clearChildren(element){
+    let children = element.childNodes;
+
+    for (let b = 0; b < children.length; b ++){
+        element.removeChild(children[b]);
+    }
+
+}
+
 function createScheduleObject(){
     return {
-        startDate : new Date("May 5, 2018"),
-            endDate : new Date("May 19, 2018"),
-        startTime : 1000,
-        endTime : 1100,
-        deltaTime : 20,
-        timeSlots : [
-            timeSlot0 = {
-                status : "closed",
-                time : "1000",
-                date : "2018-5-5",
-                name : ""},
+        startDate: new Date("May 3, 2018"),
+        endDate: new Date("May 10, 2018"),
+        startTime: 1000,
+        endTime: 1100,
+        deltaTime: 20,
+        timeSlots: [
+            {
+                status: "closed",
+                time: "1000",
+                date: "2018-5-3",
+                name: ""
+            },
 
-            timeSlot1 = {
-                status : "open",
-                time : "1020",
-                date : "2018-5-5",
-                name : ""},
+            {
+                status: "open",
+                time: "1020",
+                date: "2018-5-6",
+                name: ""
+            },
 
-            timeSlot2 = {
-                status : "open",
-                time : "1040",
-                date : "2018-5-5",
-                name : ""},
+            {
+                status: "open",
+                time: "1040",
+                date: "2018-5-6",
+                name: ""
+            },
 
-            timeSlot3 = {
-                status : "booked",
-                time : "1000",
-                date : "2018-5-6",
-                name : "Kevin"},
+            {
+                status: "booked",
+                time: "1000",
+                date: "2018-5-7",
+                name: "Kevin"
+            },
 
-            timeSlot4 = {
-                status : "open",
-                time : "1020",
-                date : "2018-5-6",
-                name : ""},
+            {
+                status: "open",
+                time: "1020",
+                date: "2018-5-7",
+                name: ""
+            },
 
-            timeSlot5 = {
-                status : "open",
-                time : "1040",
-                date : "2018-5-6",
-                name : ""},
+            {
+                status: "open",
+                time: "1040",
+                date: "2018-5-7",
+                name: ""
+            },
 
-            timeSlot6 = {
-                status : "open",
-                time : "1000",
-                date : "2018-5-7",
-                name : ""},
+            {
+                status: "open",
+                time: "1000",
+                date: "2018-5-8",
+                name: ""
+            },
 
-            timeSlot7 = {
-                status : "open",
-                time : "1020",
-                date : "2018-5-7",
-                name : ""},
+            {
+                status: "open",
+                time: "1020",
+                date: "2018-5-8",
+                name: ""
+            },
 
-            timeSlot8 = {
-                status : "open",
-                time : "1040",
-                date : "2018-5-7",
-                name : ""},
+            {
+                status: "open",
+                time: "1040",
+                date: "2018-5-8",
+                name: ""
+            },
 
-            timeSlot9 = {
-                status : "open",
-                time : "1000",
-                date : "2018-5-8",
-                name : ""},
+            {
+                status: "open",
+                time: "1000",
+                date: "2018-5-9",
+                name: ""
+            },
 
-            timeSlot10 = {
-                status : "open",
-                time : "1020",
-                date : "2018-5-8",
-                name : ""},
+            {
+                status: "open",
+                time: "1020",
+                date: "2018-5-9",
+                name: ""
+            },
 
-            timeSlot11 = {
-                status : "open",
-                time : "1040",
-                date : "2018-5-8",
-                name : ""},
+            {
+                status: "open",
+                time: "1040",
+                date: "2018-5-9",
+                name: ""
+            },
 
-            timeSlot12 = {
-                status : "open",
-                time : "1000",
-                date : "2018-5-9",
-                name : ""},
+            {
+                status: "open",
+                time: "1000",
+                date: "2018-5-10",
+                name: ""
+            },
 
-            timeSlot13 = {
-                status : "open",
-                time : "1020",
-                date : "2018-5-9",
-                name : ""},
+            {
+                status: "open",
+                time: "1020",
+                date: "2018-5-10",
+                name: ""
+            },
 
-            timeSlot14 = {
-                status : "open",
-                time : "1040",
-                date : "2018-5-9",
-                name : ""}
+            {
+                status: "open",
+                time: "1040",
+                date: "2019-5-10",
+                name: ""
+            }
         ]
     };
 }
