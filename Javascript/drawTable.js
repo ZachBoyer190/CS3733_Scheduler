@@ -8,18 +8,36 @@ const dayRowIndex = 0;
 const numDaysInWeek = 7;
 const numMillisDay = 86400000;
 const startWeek = 1;
+const url = 'https://jsonplaceholder.typicode.com/posts';
 let scheduleStartDate;
 let tableStartDate;
 
 // TODO comment this out once a response can be received from the server
 const storedScheduleObject = createScheduleObject();
 
-function drawTable(){
+function drawTableFromUrl(){
     let param = getParameter();
-    console.log(param);
 
-    let url = 'https://jsonplaceholder.typicode.com/posts';
-    $.get(url,function (data, status) {
+    if (param === ""){
+        return;
+    }
+    param = "scheduleID=" + param;
+    $.get(url,param, function (data, status) {
+        // TODO uncomment this once schedules can be taken from server
+        //const storedScheduleObject = data;
+        createTableFromObject();
+    });
+
+}
+
+function drawTableFromButton() {
+    let inputID = document.getElementById("ScheduleID").value;
+    if(inputID.length === 0){
+        return;
+    }
+    inputID = "scheduleID=" + inputID;
+    $.get(url,inputID, function (data, status) {
+        document.getElementById("ScheduleID").value = "";
         // TODO uncomment this once schedules can be taken from server
         //const storedScheduleObject = data;
         createTableFromObject();
@@ -29,6 +47,9 @@ function drawTable(){
 
 function getParameter(){
     let url = window.location.search;
+    if(!url.includes("?")){
+        return "";
+    }
     let paramString = url.split("?")[1];
     return paramString.split("=")[1];
 }
@@ -37,7 +58,7 @@ function createTableFromObject(){
 
     let table = document.getElementById("scheduleTable");
 
-
+    document.getElementById("scheduleName").innerHTML = storedScheduleObject.name;
     scheduleStartDate = storedScheduleObject.startDate;
     generateInitialTableStartDate();
     initWeekShown();
@@ -46,8 +67,7 @@ function createTableFromObject(){
     fillTableWithEmptyCells(table);
     fillTimeColumn(table);
     fillTimeSlots(table);
-    // TODO create a text area for putting the booking name
-    // TODO create function that actually schedules a meeting
+    // TODO create function that actually schedules a meeting and tells secret code to secret code paragraph element
     // TODO add function logic to each button when it is made
 
 }
@@ -191,10 +211,19 @@ function subtractColon(string) {
 }
 
 function createOpenCell(){
+    let div0 = document.createElement("div");
+
+    let div1 = document.createElement("div");
+    let codeField = document.createElement('input');
+    codeField.type = "text";
+    div1.appendChild(codeField);
+    div0.appendChild(div1);
+
     let btn = document.createElement('input');
     btn.type = "button";
     btn.value = "book now";
-    return btn;
+    div0.appendChild(btn);
+    return div0;
 }
 
 function createBookedCell(thisTimeSlot) {
@@ -311,6 +340,16 @@ function clearChildren(element){
 
 }
 
+function checkEditAbility(){
+    let inputCodeArea = document.getElementById("secretCodeScheduleEdit");
+    let inputCode = inputCodeArea.value;
+
+    if(inputCode === storedScheduleObject.secretCode){
+        document.getElementById("scheduleEditOptions").style.visibility = "visible";
+    }
+    inputCodeArea.value = "";
+}
+
 function createScheduleObject(){
     return {
         startDate: new Date("May 3, 2018"),
@@ -318,6 +357,8 @@ function createScheduleObject(){
         startTime: 1000,
         endTime: 1100,
         deltaTime: 20,
+        secretCode: "12345",
+        name : "hi",
         timeSlots: [
             {
                 status: "closed",

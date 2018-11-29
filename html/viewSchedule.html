@@ -5,7 +5,7 @@
 </head>
 
 
-<body onload="drawTable()">
+<body onload="drawTableFromUrl()">
 <h1> Welcome Everyone </h1>
 <p> Use this page to view a schedule, edit a meeting, and edit the schedule.</p>
 
@@ -14,14 +14,13 @@
 
     <p> Enter the schedule ID to see your schedule if it is not shown when the page is loaded </p>
     <p> Schedule ID:
-        <input type="text" name="ScheduleID"/>
-        <input type="button" name="submitScheduleID" value="Submit"/>
-        <!-- TODO create button function and make sure it checks to see if an option has been inputted -->
-        <!--TODO create function to hand this text box
-         TODO create logic to handle if the page is loaded without a schedule id in the url-->
+        <input type="text" id="ScheduleID"/>
+        <input type="button" name="submitScheduleID" value="Submit" onclick="drawTableFromButton()"/>
     </p>
 
     <hr>
+
+    <h2 id="scheduleName"> </h2>
 
     <fieldset>
         <div>
@@ -49,22 +48,19 @@
                 <th> Friday </th>
             </tr>
         </table>
+        <p id="meetingCode"></p>
     </fieldset>
 
     <br />
 
     <div>
         <label> Secret Code to Edit Schedule:
-            <input type="text" name="secretCodeScheduleEdit" />
-            <input type="button" name="submitScheduleEditCode" value="Submit"/>
-            <!-- TODO create button function to check if the secret code is correct and make the other stuff visible -->
+            <input type="password" id="secretCodeScheduleEdit" />
+            <input type="button" name="submitScheduleEditCode" value="Submit" onclick="checkEditAbility()"/>
 
         </label>
-        <!--TODO create function to hand this text box
-         TODO create submit button for this text box
-         TODO create logic to make edit dropdown and submit button appear-->
 
-        <div id="ScheduleEditOptions" style="visibility: visible;">
+        <div id="scheduleEditOptions" style="visibility: hidden;">
             <label> Select change you would like to make to the schedule
                 <select name="selectedEdit">
                     <!-- TODO fill in options -->
